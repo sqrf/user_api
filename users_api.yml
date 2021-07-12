@@ -1,0 +1,276 @@
+swagger: "2.0"
+info:
+  description: This is the swagger file that goes with our server code
+  version: "1.0.0"
+  title: Swagger Rest Article
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /
+
+# Paths supported by the server users application backend
+paths:
+  /users:
+    get:
+      operationId: users_backend.list_all
+      tags:
+        - Users
+      summary: Read the entire set of users, sorted by full name with pagination and n elements per page.
+      description: Read the entire set of users, sorted by full name, paginated.
+      parameters:
+        - name: page
+          description: Pagination page number
+          in: query
+          type: integer
+          required: false
+          default: 1
+        - name: per_page
+          description: Pagination per page items
+          in: query
+          type: integer
+          required: false
+          default: 10
+      responses:
+        200:
+          description: Successfully read users set operation
+          schema:
+            type: array
+            items:
+              properties:
+                user_id:
+                  type: string
+                  description: Id of the user
+                email:
+                  type: string
+                  description: Email of the person
+                full_name:
+                  type: string
+                  description: Full name of the person
+                timestamp:
+                  type: string
+                  description: Creation/Update timestamp of the User
+                addresses:
+                  type: array
+                  description: Address list of the user
+
+    post:
+      operationId: users_backend.create
+      tags:
+        - Users
+      summary: Create an user
+      description: Create a new user
+      parameters:
+        - name: user_candidate
+          in: body
+          description: User to create
+          required: True
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                description: Email of user to create
+              password:
+                type: string
+                description: Password of user to create
+              full_name:
+                type: string
+                description: Full name of user to create
+      responses:
+        201:
+          description: Successfully created user
+          schema:
+            properties:
+              user_id:
+                type: string
+                description: Id of the user
+              email:
+                type: string
+                description: Email name of the user
+              password:
+                type: string
+                description: Password of the user
+              full_name:
+                type: string
+                description: Full name of the user
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the user record
+
+  /users/{id}/addresses:
+    post:
+      operationId: users_backend.create_address
+      tags:
+        - Address
+      summary: Create an address for a given user id
+      description: Create a new addres for an user
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          description: User id for address creation
+          required: True
+        - name: address_candidate
+          in: body
+          description: Address to create for the user id
+          required: True
+          schema:
+            type: object
+            properties:
+              primary_address:
+                type: boolean
+                description: Primary Address
+              postal_code:
+                type: string
+                description: Address Postal Code
+              municipality:
+                type: string
+                description: Address Municipality
+              state:
+                type: string
+                description: Address State
+      responses:
+        201:
+          description: Successfully created address for user
+          schema:
+            properties:
+              address_id:
+                type: integer
+                description: Id of the address
+              user_id:
+                type: integer
+                description: Id of the user
+              postal_code:
+                type: string
+                description: Postal Code
+              municipality:
+                type: string
+                description: Municipality
+              state:
+                type: string
+                description: State
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the address record
+
+  /users/{id}:
+    get:
+      operationId: users_backend.user_detail
+      tags:
+        - Users
+      summary: Read one user with detail
+      description: Read one user with detail
+      parameters:
+        - name: id
+          in: path
+          description: Id of the user to get
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully read user from users data operation
+          schema:
+            type: array
+            items:
+              properties:
+                user_id:
+                  type: string
+                  description: Id of the user
+                email:
+                  type: string
+                  description: Email of the person
+                full_name:
+                  type: string
+                  description: Full name of the person
+                timestamp:
+                  type: string
+                  description: Creation/Update timestamp of the User
+                addresses:
+                  type: array
+                  description: Address list of the user
+
+  /users/{id}/update-password:
+    post:
+      operationId: users_backend.update_password
+      tags:
+        - Users
+      summary: Create an address for a given user id
+      description: Create a new addres for an user
+      parameters:
+        - name: id
+          in: path
+          type: integer
+          description: User id for address creation
+          required: True
+        - name: new_password
+          in: body
+          description: Address to create for the user id
+          required: True
+          schema:
+              type: string
+      responses:
+        200:
+          description: Successfully changed password for user
+
+  /users/{id}/addresses/{primary_id}:
+    put:
+      operationId: users_backend.update_primary_addresss
+      tags:
+        - Address
+      summary: Update the primary address and set it active for a given user Id
+      description: Update the primary address for a given user Id
+      parameters:
+        - name: id
+          in: path
+          description: Id the user to update
+          type: integer
+          required: True
+        - name: primary_id
+          in: path
+          description: Id the address to set as primary
+          type: integer
+          required: True
+      responses:
+        200:
+          description: Successfully updated primary address
+          schema:
+            properties:
+              address_id:
+                type: integer
+                description: Id of the address
+              user_id:
+                type: integer
+                description: Id of the user
+              primary_address:
+                type: boolean
+                description: Primary Address
+              postal_code:
+                type: string
+                description: Postal Code
+              municipality:
+                type: string
+                description: Municipality
+              state:
+                type: string
+                description: State
+              timestamp:
+                type: string
+                description: Creation/Update timestamp of the address record
+
+#    delete:
+#      operationId: people.delete
+#      tags:
+#        - People
+#      summary: Delete a person from the people list
+#      description: Delete a person
+#      parameters:
+#        - name: person_id
+#          in: path
+#          type: integer
+#          description: Id of the person to delete
+#          required: true
+#      responses:
+#        200:
+#          description: Successfully deleted a person
